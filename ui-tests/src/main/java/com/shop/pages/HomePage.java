@@ -4,6 +4,7 @@ import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
 
+import static com.shop.asserts.GeneralPageAssers.isPageOpen;
 import static com.shop.pages.PageFactory.at;
 
 public class HomePage extends BasePage {
@@ -16,7 +17,8 @@ public class HomePage extends BasePage {
     }
 
     @Override
-    public NavigationBar withNavigationBar() {
-        return at(NavigationBar.class);
+    public void isOpen() {
+        isPageOpen(find(SHOP_BUTTON));
     }
+
 }

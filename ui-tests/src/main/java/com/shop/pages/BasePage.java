@@ -2,11 +2,10 @@ package com.shop.pages;
 
 import com.shop.utils.WaitCondition;
 import javaslang.control.Try;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 public abstract class BasePage implements Page {
@@ -18,7 +17,6 @@ public abstract class BasePage implements Page {
         this.driver = Page.driver;
         //TODO: Move constant 10 to properties file
         wait = new WebDriverWait(driver, 10);
-        //waitUntilPageLoads();
         Page.driver.switchTo().defaultContent();
     }
 
@@ -30,7 +28,7 @@ public abstract class BasePage implements Page {
         return this;
     }
 
-    public abstract NavigationBar withNavigationBar();
+    public abstract void isOpen();
 
     protected void click(By locator) {
         click(locator, WaitCondition.enabled);
@@ -52,14 +50,12 @@ public abstract class BasePage implements Page {
         return By.xpath(xpath);
     }
 
-    protected WebElement find(By locator, WaitCondition condition) {
-        return waitFor(locator, condition);
+    protected WebElement find(By locator) {
+        return waitFor(locator, WaitCondition.visible);
     }
 
-    protected void waitUntilPageLoads() {
-        wait.until(executor -> String
-                .valueOf(((JavascriptExecutor) executor).executeScript("return document.readyState"))
-                .equals("complete"));
+    protected WebElement find(By locator, WaitCondition condition) {
+        return waitFor(locator, condition);
     }
 
     protected void moveToElement(By locator) {
@@ -71,6 +67,10 @@ public abstract class BasePage implements Page {
         Actions action = new Actions(driver);
         action.moveToElement(find(locator, WaitCondition.visible)).click().release()
                 .sendKeys("\u0008").sendKeys(text).build().perform();
+    }
+
+    protected void waitForInvisibility(By locator) {
+        wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
     }
 
     private WebElement waitFor(By locator, WaitCondition condition) {
