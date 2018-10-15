@@ -12,7 +12,7 @@ public class EndToEndTest {
     public void test() throws InterruptedException {
         open(HomePage.class)
                 .navigateToShop()
-                .selectProduct("Glasses")
+                .selectProduct("Glasses").shouldBeProduct("Glasses")
                 .addToCart().shouldLocateOnTheRight().shouldHaveItemsInCart("Glasses", 1)
                 .removeItem("Glasses").shouldHaveEmptyCart()
                 .closeCart(ProductPage.class)
@@ -21,9 +21,9 @@ public class EndToEndTest {
                 .withNavigationBar().navigateToShop()
                 .withCartWidget().navigateToCart().shouldHaveItemsInCart("Glasses",1)
                 .closeCart(ShopPage.class)
-                .selectProduct("product")
+                .selectProduct("product").shouldBeProduct("product")
                 .addToCart().shouldHaveItemsInCart("product",1)
-                .viewCart()
+                .viewCart() //TODO: add verification here
                 .setProductQuantity("Glasses", 3)
                 .removeProduct("product");
     }

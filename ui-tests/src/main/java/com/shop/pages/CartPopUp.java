@@ -3,10 +3,8 @@ package com.shop.pages;
 import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
-import java.util.Optional;
-
 import static com.shop.asserts.CartAsserts.checkCartSize;
-import static com.shop.asserts.CartAsserts.checkIsCartEmpty;
+import static com.shop.asserts.GeneralPageAssers.checkText;
 import static com.shop.asserts.GeneralPageAssers.isPageOpen;
 import static com.shop.asserts.PositionAsserts.checkElementIsOnTheRightSide;
 import static com.shop.pages.PageFactory.at;
@@ -64,7 +62,7 @@ public class CartPopUp extends BasePage {
     }
 
     public CartPopUp shouldHaveEmptyCart() {
-        checkIsCartEmpty(find(EMPTY_CART, WaitCondition.visible));
+        checkText(find(EMPTY_CART),"Cart is empty");
         return this;
     }
 

@@ -14,7 +14,5 @@ public class CartAsserts {
         assertThat(actualSize, is(equalTo(expectedSize)));
     }
 
-    public static void checkIsCartEmpty(WebElement cart) {
-        assertThat(cart.getText(), is(equalTo("Cart is empty")));
-    }
+
 }

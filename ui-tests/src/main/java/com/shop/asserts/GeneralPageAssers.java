@@ -13,4 +13,8 @@ public class GeneralPageAssers {
     public static void isPageOpen(WebElement element) {
         assertThat(element.isDisplayed(), is(equalTo(true)));
     }
+
+    public static void checkText(WebElement element, String text) {
+        assertThat(element.getText(), is(equalTo(text)));
+    }
 }
