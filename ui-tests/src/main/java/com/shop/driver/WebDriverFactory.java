@@ -14,9 +14,8 @@ public class WebDriverFactory {
     public static final String FIREFOX = "firefox";
     public static final String CHROME = "chrome";
 
+    // Make sure that you set "browser" system property during the test run
     public static WebDriver getDriver() {
-        //TODO: remove this
-        System.setProperty("browser", "chrome");
         return Match(System.getProperty("browser")).of(
                 Case(anyOf(isNull(), String::isEmpty), () -> { throw new IllegalStateException("'browser' property is missing!"); }),
                 Case(CHROME::equalsIgnoreCase, () -> new ChromeDriver()),

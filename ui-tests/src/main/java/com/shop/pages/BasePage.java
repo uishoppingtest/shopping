@@ -17,10 +17,9 @@ public abstract class BasePage implements Page {
 
     public BasePage() {
         this.driver = Page.driver;
-        //TODO: Move constant 10 to properties file
         wait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(5))
-                .pollingEvery(Duration.ofSeconds(1))
+                .withTimeout(Duration.ofSeconds(Integer.valueOf(rb.getString("wait_timeout"))))
+                .pollingEvery(Duration.ofSeconds(Integer.valueOf(rb.getString("polling_interval"))))
                 .ignoring(NoSuchElementException.class);
         Page.driver.switchTo().defaultContent();
     }
@@ -46,15 +45,6 @@ public abstract class BasePage implements Page {
         ((WebElement) waitFor(locator, "", condition)).click();
     }
 
-    @Step("Switch to frame be locator {locator} with condition {condition}")
-    protected void switchToFrame(By locator, WaitCondition condition) {
-        waitFor(locator, "", WaitCondition.frameAvailable);
-    }
-
-    protected By byXPath(String xpath) {
-        return By.xpath(xpath);
-    }
-
     @Step("Find element by locator {locator}")
     protected WebElement find(By locator) {
         return waitFor(locator, "", WaitCondition.visible);
@@ -65,6 +55,11 @@ public abstract class BasePage implements Page {
         return waitFor(locator, "", condition);
     }
 
+    @Step("Switch to frame be locator {locator} with condition {condition}")
+    protected void switchToFrame(By locator, WaitCondition condition) {
+        waitFor(locator, "", WaitCondition.frameAvailable);
+    }
+
     @Step("Move to element with locator {locator}")
     protected void moveToElement(By locator) {
         Actions action = new Actions(driver);
@@ -72,7 +67,7 @@ public abstract class BasePage implements Page {
     }
 
     @Step("Populate text {text} in element by locator {locator}")
-    protected void putText(By locator, String text) {
+    protected void cleanAndTypeText(By locator, String text) {
         Actions action = new Actions(driver);
         action.moveToElement(find(locator, WaitCondition.visible)).click().release()
                 .sendKeys("\u0008").sendKeys(text).build().perform();
