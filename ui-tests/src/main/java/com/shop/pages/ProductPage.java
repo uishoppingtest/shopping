@@ -4,7 +4,6 @@ import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
 import static com.shop.asserts.GeneralPageAsserts.checkText;
-import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 import static com.shop.pages.PageFactory.at;
 
 public class ProductPage extends BasePage {
@@ -23,7 +22,7 @@ public class ProductPage extends BasePage {
 
     @Override
     public void isOpen() {
-        isPageOpen(find(PRODUCT_PAGE_CONTAINER));
+        find(PRODUCT_NAME);
     }
 
     public CartPopUp addToCart() {

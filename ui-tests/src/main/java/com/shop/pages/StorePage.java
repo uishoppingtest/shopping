@@ -3,7 +3,6 @@ package com.shop.pages;
 import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
-import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 import static com.shop.pages.PageFactory.at;
 
 public class StorePage extends BasePage {
@@ -20,7 +19,7 @@ public class StorePage extends BasePage {
 
     @Override
     public void isOpen() {
-        isPageOpen(find(SHOP_CONTAINER));
+        find(SHOP_CONTAINER);
     }
 
     public ProductPage selectProduct(String productName) {

@@ -4,12 +4,12 @@ import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
 import static com.shop.asserts.CartAsserts.checkCartSize;
-import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 import static com.shop.pages.PageFactory.at;
 
 public class CartWidget extends BasePage{
 
     private final By CART_FRAME = By.xpath("//iframe[@title='Wix Stores']");
+    private final By CART_WIDGET = By.xpath("//cart-widget");
     private final By CART_BUTTON = By.xpath("//a[@id='cart-widget-button']");
     private final By CART_BUTTON_DATA = By.xpath("//a[@id='cart-widget-button']//*[name()='text']");
 
@@ -21,12 +21,12 @@ public class CartWidget extends BasePage{
 
     @Override
     public void isOpen() {
-        isPageOpen(find(CART_BUTTON));
+        find(CART_WIDGET);
     }
 
-    public CartPopUp navigateToCart() throws InterruptedException {
+    public CartPopUp navigateToCart()  {
         //TODO: Wait for Store page load to be finished. sleep(1000) is not enough.
-        Thread.sleep(2000);
+        //Thread.sleep(2000);
         click(CART_BUTTON);
         return at(CartPopUp.class);
     }

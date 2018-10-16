@@ -3,21 +3,16 @@ package com.shop.pages;
 import com.shop.utils.WaitCondition;
 import io.qameta.allure.Step;
 import javaslang.control.Try;
-import jdk.nashorn.internal.objects.annotations.SpecializedFunction;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 public abstract class BasePage implements Page {
 
     private final WebDriver driver;
-    //private final WebDriverWait wait;
     private final FluentWait<WebDriver> wait;
 
     public BasePage() {
@@ -48,12 +43,12 @@ public abstract class BasePage implements Page {
 
     @Step("Click on element by locator {locator} with condition {condition}")
     protected void click(By locator, WaitCondition condition) {
-        waitFor(locator, condition).click();
+        ((WebElement) waitFor(locator, "", condition)).click();
     }
 
     @Step("Switch to frame be locator {locator} with condition {condition}")
     protected void switchToFrame(By locator, WaitCondition condition) {
-        driver.switchTo().frame(waitFor(locator, condition));
+        waitFor(locator, "", WaitCondition.frameAvailable);
     }
 
     protected By byXPath(String xpath) {
@@ -62,12 +57,12 @@ public abstract class BasePage implements Page {
 
     @Step("Find element by locator {locator}")
     protected WebElement find(By locator) {
-        return waitFor(locator, WaitCondition.visible);
+        return waitFor(locator, "", WaitCondition.visible);
     }
 
     @Step("Find element by locator {locator} with condition {condition}")
     protected WebElement find(By locator, WaitCondition condition) {
-        return waitFor(locator, condition);
+        return waitFor(locator, "", condition);
     }
 
     @Step("Move to element with locator {locator}")
@@ -85,7 +80,7 @@ public abstract class BasePage implements Page {
 
     @Step("Wait for element invisibility {locator}")
     protected void waitForInvisibility(By locator) {
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(locator));
+        waitFor(locator, "", WaitCondition.invisible);
     }
 
     @Step("Check if element {locator} is present")
@@ -98,34 +93,8 @@ public abstract class BasePage implements Page {
         }
     }
 
-    protected boolean waitForJStoLoad() {
-        JavascriptExecutor js = (JavascriptExecutor)driver;
-        // wait for jQuery to load
-        ExpectedCondition<Boolean> jQueryLoad = new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                try {
-                    return ((Long)js.executeScript("return jQuery.active") == 0);
-                }
-                catch (Exception e) {
-                    return true;
-                }
-            }
-        };
-
-        // wait for Javascript to load
-        ExpectedCondition<Boolean> jsLoad = new ExpectedCondition<Boolean>() {
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return js.executeScript("return document.readyState")
-                        .toString().equals("complete");
-            }
-        };
-
-        return wait.until(jQueryLoad) && wait.until(jsLoad);
-    }
-
-    private WebElement waitFor(By locator, WaitCondition condition) {
-        return wait.until(condition.getType().apply(locator));
+    private <T, V, R> R waitFor(final T arg1, final V arg2, final WaitCondition condition) {
+        return (R) wait.ignoring(StaleElementReferenceException.class)
+                .until((Function<WebDriver, ?>) condition.getType().apply(arg1, arg2));
     }
 }

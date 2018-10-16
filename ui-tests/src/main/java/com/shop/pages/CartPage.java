@@ -4,7 +4,6 @@ import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
 import static com.shop.asserts.CartAsserts.checkCartSize;
-import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 
 public class CartPage extends BasePage {
 
@@ -43,6 +42,6 @@ public class CartPage extends BasePage {
 
     @Override
     public void isOpen() {
-        isPageOpen(find(CART_CONTENT));
+        find(CART_CONTENT);
     }
 }

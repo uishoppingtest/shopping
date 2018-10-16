@@ -5,7 +5,6 @@ import org.openqa.selenium.By;
 
 import static com.shop.asserts.CartAsserts.checkCartSize;
 import static com.shop.asserts.GeneralPageAsserts.checkText;
-import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 import static com.shop.asserts.PositionAsserts.checkElementIsOnTheRightSide;
 import static com.shop.pages.PageFactory.at;
 
@@ -13,10 +12,11 @@ public class CartPopUp extends BasePage {
 
     private static final By CART_FRAME = By.xpath("//iframe[contains(@class,'Popup')]");
     private static final By OPEN_MINI_CART = By.xpath("//div[@class='minicart active']");
-    private static final By CLOSED_MINI_CART = By.xpath("//div[@class='minicart']");
-    private static final By EMPTY_CART = By.xpath("//section[@class='cart-content']//span");
-    private static final By CLOSE_CART = By.xpath("//button[@title='Close cart widget']");
-    private static final By VIEW_CART = By.xpath("//footer//a[@data-hook='widget-view-cart-button']");
+    private static final By CART_POPUP = By.xpath("//cart-popup");
+
+    private static final By EMPTY_CART_CONTENT = By.xpath("//section[@class='cart-content']//span");
+    private static final By CLOSE_CART_BUTTON = By.xpath("//button[@title='Close cart widget']");
+    private static final By VIEW_CART_BUTTON = By.xpath("//footer//a[@data-hook='widget-view-cart-button']");
     private static final By CART_BACKDROP = By.xpath("//div[@data-hook='cart-widget-backdrop']");
     private static final String ITEM_NAME_IN_CARD_PATH = "//div[@data-hook='cart-widget-name' and contains(text(),'%s')]";
     private static final String REMOVE_ITEM_PATH = ITEM_NAME_IN_CARD_PATH +
@@ -27,13 +27,17 @@ public class CartPopUp extends BasePage {
     public CartPopUp() {
         super();
         switchToFrame(CART_FRAME, WaitCondition.enabled);
-        waitForJStoLoad();
         isOpen();
     }
 
     @Override
     public void isOpen() {
-        isPageOpen(find(CART_BACKDROP));
+        if (!isElementPresent(OPEN_MINI_CART)) {
+            at(CartWidget.class).navigateToCart();
+        }
+        find(CART_BACKDROP);
+        find(OPEN_MINI_CART, WaitCondition.enabled);
+        //TODO: wait more here
     }
 
     public CartPopUp removeItem(String itemName) {
@@ -44,13 +48,9 @@ public class CartPopUp extends BasePage {
         return this;
     }
 
-    public <T extends Page> T closeCart(final Class<T> expectedPageClass) throws InterruptedException {
-        click(CLOSE_CART, WaitCondition.visible);
-        waitForInvisibility(CART_BACKDROP);
-        waitForJStoLoad();
-        find(CLOSED_MINI_CART);
-        //TODO: remove it
-        Thread.sleep(1000);
+    public <T extends Page> T closeCart(final Class<T> expectedPageClass) {
+        click(CLOSE_CART_BUTTON);
+        waitForInvisibility(CART_POPUP);
         return at(expectedPageClass);
     }
 
@@ -65,12 +65,12 @@ public class CartPopUp extends BasePage {
     }
 
     public CartPopUp shouldHaveEmptyCart() {
-        checkText(find(EMPTY_CART),"Cart is empty");
+        checkText(find(EMPTY_CART_CONTENT),"Cart is empty");
         return this;
     }
 
     public CartPage viewCart() {
-        click(VIEW_CART, WaitCondition.enabled);
+        click(VIEW_CART_BUTTON, WaitCondition.enabled);
         return at(CartPage.class);
     }
 

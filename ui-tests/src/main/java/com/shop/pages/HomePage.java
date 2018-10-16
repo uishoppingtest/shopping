@@ -3,8 +3,6 @@ package com.shop.pages;
 import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
-
-import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 import static com.shop.pages.PageFactory.at;
 
 public class HomePage extends BasePage {
@@ -18,7 +16,7 @@ public class HomePage extends BasePage {
 
     @Override
     public void isOpen() {
-        isPageOpen(find(SHOP_BUTTON));
+        find(SHOP_BUTTON);
     }
 
 }
