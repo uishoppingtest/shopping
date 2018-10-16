@@ -22,9 +22,5 @@ public interface Page {
         return at(CartWidget.class);
     }
 
-    default NavigationBar withNavigationBar() {
-        return at(NavigationBar.class);
-    }
-
     Page navigateTo(String url);
 }

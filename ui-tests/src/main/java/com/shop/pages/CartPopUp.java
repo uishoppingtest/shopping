@@ -4,15 +4,16 @@ import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
 import static com.shop.asserts.CartAsserts.checkCartSize;
-import static com.shop.asserts.GeneralPageAssers.checkText;
-import static com.shop.asserts.GeneralPageAssers.isPageOpen;
+import static com.shop.asserts.GeneralPageAsserts.checkText;
+import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 import static com.shop.asserts.PositionAsserts.checkElementIsOnTheRightSide;
 import static com.shop.pages.PageFactory.at;
 
 public class CartPopUp extends BasePage {
 
     private static final By CART_FRAME = By.xpath("//iframe[contains(@class,'Popup')]");
-    private static final By MINI_CART = By.xpath("//div[@class='minicart active']");
+    private static final By OPEN_MINI_CART = By.xpath("//div[@class='minicart active']");
+    private static final By CLOSED_MINI_CART = By.xpath("//div[@class='minicart']");
     private static final By EMPTY_CART = By.xpath("//section[@class='cart-content']//span");
     private static final By CLOSE_CART = By.xpath("//button[@title='Close cart widget']");
     private static final By VIEW_CART = By.xpath("//footer//a[@data-hook='widget-view-cart-button']");
@@ -26,6 +27,7 @@ public class CartPopUp extends BasePage {
     public CartPopUp() {
         super();
         switchToFrame(CART_FRAME, WaitCondition.enabled);
+        waitForJStoLoad();
         isOpen();
     }
 
@@ -33,7 +35,6 @@ public class CartPopUp extends BasePage {
     public void isOpen() {
         isPageOpen(find(CART_BACKDROP));
     }
-
 
     public CartPopUp removeItem(String itemName) {
         By itemToBeRemoved = byXPath(String.format(ITEM_NAME_IN_CARD_PATH, itemName));
@@ -44,19 +45,21 @@ public class CartPopUp extends BasePage {
     }
 
     public <T extends Page> T closeCart(final Class<T> expectedPageClass) throws InterruptedException {
-        //TODO: fix this shit. Wait for animation (open cart) to be finished
-        Thread.sleep(1000);
         click(CLOSE_CART, WaitCondition.visible);
         waitForInvisibility(CART_BACKDROP);
+        waitForJStoLoad();
+        find(CLOSED_MINI_CART);
+        //TODO: remove it
+        Thread.sleep(1000);
         return at(expectedPageClass);
     }
 
     public CartPopUp shouldLocateOnTheRight() {
-        checkElementIsOnTheRightSide(find(MINI_CART, WaitCondition.visible), Page.driver);
+        checkElementIsOnTheRightSide(find(OPEN_MINI_CART, WaitCondition.visible), Page.driver);
         return this;
     }
 
-    public CartPopUp shouldHaveItemsInCart(String productName, int expectedSize) {
+    public CartPopUp shouldHaveProductsInCart(String productName, int expectedSize) {
         checkCartSize(getAmountOfProductsInCart(productName), expectedSize);
         return this;
     }
@@ -74,11 +77,6 @@ public class CartPopUp extends BasePage {
     private int getAmountOfProductsInCart(String productName) {
         return Integer.valueOf(find(byXPath(String.format(ITEM_QUANTITY_IN_CART, productName)),
                 WaitCondition.visible).getText());
-    }
-
-    @Override
-    public NavigationBar withNavigationBar() {
-        throw new UnsupportedOperationException("Navigation bar is not available from Cart pop-up!");
     }
 
     @Override

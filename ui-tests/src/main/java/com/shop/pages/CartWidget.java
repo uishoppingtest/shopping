@@ -4,7 +4,7 @@ import com.shop.utils.WaitCondition;
 import org.openqa.selenium.By;
 
 import static com.shop.asserts.CartAsserts.checkCartSize;
-import static com.shop.asserts.GeneralPageAssers.isPageOpen;
+import static com.shop.asserts.GeneralPageAsserts.isPageOpen;
 import static com.shop.pages.PageFactory.at;
 
 public class CartWidget extends BasePage{
@@ -25,7 +25,7 @@ public class CartWidget extends BasePage{
     }
 
     public CartPopUp navigateToCart() throws InterruptedException {
-        //TODO: Wait for animation (close cart) to be finished. sleep(1000) is not enough.
+        //TODO: Wait for Store page load to be finished. sleep(1000) is not enough.
         Thread.sleep(2000);
         click(CART_BUTTON);
         return at(CartPopUp.class);
