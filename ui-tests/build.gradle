@@ -6,15 +6,12 @@ ext {
 
 dependencies {
     compile "com.fasterxml.jackson.core:jackson-databind:$jacksonDatabindVersion"
-    implementation "io.rest-assured:rest-assured:$restAssuredVersion"
 
     compile group: 'io.javaslang', name: 'javaslang', version: '2.0.6'
     compile group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '3.14.0'
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile group: 'ch.qos.logback', name: 'logback-core', version: '1.2.3'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    compile group: 'com.github.javafaker', name: 'javafaker', version: '0.16'
-    compile group: 'io.qameta.allure', name: 'allure-rest-assured', version: '2.7.0'
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitVersion")
